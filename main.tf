@@ -1,66 +1,65 @@
+# Definição do provedor do Azure
 provider "azurerm" {
   features {}
 }
 
-resource "azurerm_resource_group" "example" {
-  name     = "example-resources"
+# Resource Group do HUB
+resource "azurerm_resource_group" "hub_rg" {
+  name     = "rg-hub"
   location = "East US"
 }
 
-resource "azurerm_virtual_network" "example" {
-  name                = "example-network"
+# Virtual Network do HUB
+resource "azurerm_virtual_network" "hub_vnet" {
+  name                = "vnet-hub"
+  location            = azurerm_resource_group.hub_rg.location
+  resource_group_name = azurerm_resource_group.hub_rg.name
   address_space       = ["10.0.0.0/16"]
-  location            = azurerm_resource_group.example.location
-  resource_group_name = azurerm_resource_group.example.name
 }
 
-resource "azurerm_subnet" "example" {
-  name                 = "example-subnet"
-  resource_group_name  = azurerm_resource_group.example.name
-  virtual_network_name = azurerm_virtual_network.example.name
+# Subnet do Firewall no HUB
+resource "azurerm_subnet" "firewall_subnet" {
+  name                 = "snet-firewall"
+  resource_group_name  = azurerm_resource_group.hub_rg.name
+  virtual_network_name = azurerm_virtual_network.hub_vnet.name
   address_prefixes     = ["10.0.1.0/24"]
 }
 
-resource "azurerm_network_interface" "example" {
-  name                = "example-nic"
-  location            = azurerm_resource_group.example.location
-  resource_group_name = azurerm_resource_group.example.name
-
-  ip_configuration {
-    name                          = "internal"
-    subnet_id                     = azurerm_subnet.example.id
-    private_ip_address_allocation = "Dynamic"
-  }
+# Resource Group do SPOKE
+resource "azurerm_resource_group" "spoke_rg" {
+  name     = "rg-spoke"
+  location = "East US"
 }
 
-resource "azurerm_virtual_machine" "example" {
-  name                  = "example-vm"
-  location              = azurerm_resource_group.example.location
-  resource_group_name   = azurerm_resource_group.example.name
-  network_interface_ids = [azurerm_network_interface.example.id]
-  vm_size               = "Standard_DS1_v2"
+# Virtual Network do SPOKE
+resource "azurerm_virtual_network" "spoke_vnet" {
+  name                = "vnet-spoke"
+  location            = azurerm_resource_group.spoke_rg.location
+  resource_group_name = azurerm_resource_group.spoke_rg.name
+  address_space       = ["10.1.0.0/16"]
+}
 
-  storage_os_disk {
-    name              = "example-os-disk"
-    caching           = "ReadWrite"
-    create_option     = "FromImage"
-    managed_disk_type = "Standard_LRS"
-  }
+# Subnet do Aplicativo no SPOKE
+resource "azurerm_subnet" "app_subnet" {
+  name                 = "snet-app"
+  resource_group_name  = azurerm_resource_group.spoke_rg.name
+  virtual_network_name = azurerm_virtual_network.spoke_vnet.name
+  address_prefixes     = ["10.1.1.0/24"]
+}
 
-  storage_image_reference {
-    publisher = "Canonical"
-    offer     = "UbuntuServer"
-    sku       = "18.04-LTS"
-    version   = "latest"
-  }
+# Peering entre HUB e SPOKE
+resource "azurerm_virtual_network_peering" "hub_to_spoke" {
+  name                         = "peer-hub-to-spoke"
+  resource_group_name          = azurerm_resource_group.hub_rg.name
+  virtual_network_name         = azurerm_virtual_network.hub_vnet.name
+  remote_virtual_network_id    = azurerm_virtual_network.spoke_vnet.id
+  allow_virtual_network_access = true
+}
 
-  os_profile {
-    computer_name  = "example-vm"
-    admin_username = "adminuser"
-    admin_password = "P@ssw0rd1234!"
-  }
-
-  os_profile_linux_config {
-    disable_password_authentication = false
-  }
+resource "azurerm_virtual_network_peering" "spoke_to_hub" {
+  name                         = "peer-spoke-to-hub"
+  resource_group_name          = azurerm_resource_group.spoke_rg.name
+  virtual_network_name         = azurerm_virtual_network.spoke_vnet.name
+  remote_virtual_network_id    = azurerm_virtual_network.hub_vnet.id
+  allow_virtual_network_access = true
 }
