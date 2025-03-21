@@ -2,12 +2,12 @@
 
 ⚠️ Este repositório tem como objetivo apenas validar os conhecimentos técnicos ao qual estou adquirindo no momento:
 
-#📝  Azure (Cloud)
+📝  Azure (Cloud)
 
-#📝  Terraform (IaC)
+📝  Terraform (IaC)
 
-#📝  Git
+📝  Git
 
-#📝  GitHub Actions (pipeline)
+📝  GitHub Actions (pipeline)
 
-#📝  VScode
+📝  VScode
