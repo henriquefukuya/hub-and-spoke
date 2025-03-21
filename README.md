@@ -56,5 +56,5 @@ Copiar as informações do arquivo de saída (json) conforme abaixo:
 10) Digite git remote add origin https://github.com/seu-usuario/nome-do-repositorio.git
 11) Digite git add . (para adicionar todos os arquivos to Terraform ao git)
 12) Digite git -m commit "Primeiro Commit" (ou como preferir)
-13) Digit git push -u origin main
+13) Digite git push -u origin main
    
