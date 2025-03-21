@@ -38,7 +38,9 @@
 3) Criar o diretório .github/workflows
 4) No diretório criado, criar o arquivo terraform.yaml
 5) Realizar a autenticação do Azure Login (via bash) e criar um Service Principal:
+   
    az ad sp create-for-rbac --name "terraform-sp" --role="Contributor" --scopes="/subscriptions/<SUBSCRIPTION_ID>" --sdk-auth
+
 Copiar as informações do arquivo de saída (json) conforme abaixo:
 
 {
