@@ -52,9 +52,11 @@ Copiar as informações do arquivo de saída (json) conforme abaixo:
 
 7) No repositório do Git, vá em Settings → Secrets and variables → Actions → New Repository e crie um repositório com o nome de AZURE_CREDENTIALS, inserindo as informações do arquivo json copiado acima;
 8) Crie outro repositório com o nome de SUBSCRIPTION_ID, inserindo apenas a Subscription da sua conta;
-9) Digite git init (inicializar o repositório Git dentro do diretório do seu projeto Terraform)
+9) Digite git init (inicializar o repositório Git dentro do diretório do seu projeto Terraform);
 10) Digite git remote add origin https://github.com/seu-usuario/nome-do-repositorio.git
-11) Digite git add . (para adicionar todos os arquivos to Terraform ao git)
-12) Digite git -m commit "Primeiro Commit" (ou como preferir)
+11) Digite git add . (para adicionar todos os arquivos to Terraform ao git);
+12) Digite git -m commit "Primeiro Commit" (ou como preferir);
 13) Digite git push -u origin main
+14) No repositório Git → Actions → All Workflows, verifique se a pipeline está em execução e acompanhe os processos;
+15) Após a pipeline ser executada com êxito, valide no Portal do Azure a criação dos recursos conforme descrito no arquivo yaml.
    
